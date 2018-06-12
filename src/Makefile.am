@@ -1,0 +1,13 @@
+AM_CFLAGS = --pedantic -Wall -std=c++14 -O3
+AM_LDFLAGS =
+
+noinst_LIBRARIES = libGoPiGo3.a libtof.a
+libGoPiGo3_a_SOURCES = libs/GoPiGo3.cpp
+
+libtof_a_SOURCES = libs/tof.c
+libtof_a_CXXFLAGS = --pedantic -Wall -std=c11 -O3
+
+bin_PROGRAMS = GoPiGo3Demo
+GoPiGo3Demo_SOURCES = main.cpp
+GoPiGo3Demo_LDADD = libGoPiGo3.a libtof.a
+GoPiGo3Demo_LDFLAGS = -lbluetooth -lpthread
