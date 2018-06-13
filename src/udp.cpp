@@ -48,7 +48,7 @@ int poll_server(UDP_conn con, int* left_pow, int* right_pow, int dist)
   setsockopt(con.sock,SOL_SOCKET,SO_RCVTIMEO,(char*)&timeout,sizeof(struct timeval));
   char message[32];
   memset(message, '\0', 32);
-  size_t len = sizeof(con.addr);
+  socklen_t len = sizeof(con.addr);
   if( recvfrom(con.sock, message, 32, 0, (struct sockaddr *) &con.addr, &len) != -1)
   {
     //printf("%s\n",message );

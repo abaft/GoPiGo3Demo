@@ -60,8 +60,8 @@ void* motor_loop(void* vstate)
     {
       gpg.set_motor_power(MOTOR_LEFT, state->left_M);
       gpg.set_motor_power(MOTOR_RIGHT, state->right_M);
-      set_servo(SERVO_1, pos);
-      pos += 10000
+      gpg.set_servo(SERVO_1, pos);
+      pos += 10000;
     }
     timespec sleep = {0, 10000000};
     nanosleep(&sleep, NULL);
