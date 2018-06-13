@@ -60,17 +60,9 @@ bluetooth_conn connect_BT_server()
 int bluetooth_poll(bluetooth_conn conn, int distance, int* ext_distance)
 {
   if (conn.order)
-  {
     write(conn.socket, &distance, sizeof(int));
-    printf("BLUETOOTH SENT %i\n", distance);
-  }
   recv(conn.socket, ext_distance, sizeof(int), 0);
-  printf("BLUETOOTH RECE %i\n", ext_distance);
   if (!conn.order)
-  {
     write(conn.socket, &distance, sizeof(int));
-    printf("BLUETOOTH SENT %i\n", distance);
-  }
-  printf("%i\n", ext_distance);
   return 0;
 }

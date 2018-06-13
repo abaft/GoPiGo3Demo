@@ -17,7 +17,6 @@ extern "C" {
 GoPiGo3 gpg;
 using namespace std;
 
-pthread_mutex_t mutex_motor = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct
 {
@@ -49,6 +48,7 @@ void* bluetooth_loop(void* vstate)
 void* motor_loop(void* vstate)
 {
   gpg_state* state = (gpg_state*) vstate;
+  uint16_t pos = 0;
   while(1)
   {
     if (state->distance < 100 && state->distance != -1 || state->ext_distance < 100 && state->ext_distance != -1)
@@ -60,6 +60,8 @@ void* motor_loop(void* vstate)
     {
       gpg.set_motor_power(MOTOR_LEFT, state->left_M);
       gpg.set_motor_power(MOTOR_RIGHT, state->right_M);
+      set_servo(SERVO_1, pos);
+      pos += 10000
     }
     timespec sleep = {0, 10000000};
     nanosleep(&sleep, NULL);
