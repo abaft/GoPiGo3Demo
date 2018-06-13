@@ -35,12 +35,37 @@ bluetooth_conn connect_BT_client()
   return {s, 1};
 }
 
+bluetooth_conn connect_BT_server()
+{
+	struct sockaddr_rc addr = { 0 }, rem_addr = { 0 };
+	int s;
+
+	s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+	addr.rc_family = AF_BLUETOOTH;
+	addr.rc_channel = (uint8_t) 1;
+	//addr.rc_bdaddr = *BDADDR_ANY;
+	str2ba( CAR0ADDR, &addr.rc_bdaddr);
+	
+	printf("%i\n", bind(s, (struct sockaddr *) &addr, sizeof(addr)));
+	listen(s, 1);
+	char buf[256] = { 0 };
+	ba2str( &addr.rc_bdaddr, buf );
+	fprintf(stdout, "local %s\n", buf);
+
+	socklen_t opt = sizeof(rem_addr);
+	accept(s, (struct sockaddr *)&rem_addr, &opt);
+	return {s, 0};
+}
+
 int bluetooth_poll(bluetooth_conn conn, int distance, int* ext_distance)
 {
   if (conn.order)
     write(conn.socket, &distance, sizeof(int));
+  else
+    printf("\nREC\n");
   recv(conn.socket, ext_distance, sizeof(int), 0);
   if (!conn.order)
     write(conn.socket, &distance, sizeof(int));
+  printf("%i\n", ext_distance);
   return 0;
 }

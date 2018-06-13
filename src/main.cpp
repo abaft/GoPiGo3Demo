@@ -51,7 +51,7 @@ void* motor_loop(void* vstate)
   gpg_state* state = (gpg_state*) vstate;
   while(1)
   {
-    if (state->distance < 100 && state->distance != -1 )//|| state->ext_distance < 100 && state->ext_distance != -1)
+    if (state->distance < 100 && state->distance != -1 || state->ext_distance < 100 && state->ext_distance != -1)
     {
       gpg.set_motor_power(MOTOR_LEFT, 0);
       gpg.set_motor_power(MOTOR_RIGHT, 0);
@@ -75,6 +75,8 @@ void* network_loop(void* vstate)
     poll_server(state->udp, &left_M, &right_M, state->distance);
     state->left_M = left_M;
     state->right_M = right_M;
+    timespec sleep = {0, 100000000};
+    nanosleep(&sleep, NULL);
   }
 }
 
@@ -90,7 +92,7 @@ int main(int argc, char const *argv[])
   }
 
   state.udp = UDP_connection(argv[1]);
-  state.bluetooth = connect_BT_client();
+  state.bluetooth = connect_BT_server();
 
   pthread_t threads[4];
   pthread_create(threads + 0, NULL, dist_loop, &state);

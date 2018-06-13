@@ -8,6 +8,7 @@ typedef struct
 }bluetooth_conn;
 
 bluetooth_conn connect_BT_client();
+bluetooth_conn connect_BT_server();
 int bluetooth_poll(bluetooth_conn conn, int distance, int* ext_distance);
 
 #endif
