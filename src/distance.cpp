@@ -2,7 +2,7 @@ extern "C" {
 #include "libs/tof.h" // time of flight sensor library
 }
 #include <stdio.h>
-#include "distance.c"
+#include "distance.h"
 
 using namespace std;
 
@@ -22,7 +22,7 @@ int dist_init()
 	printf("Revision ID - %d\n", revision);
 }
 
-int dist_poll
+int dist_poll()
 {
 	int iDistance;
 

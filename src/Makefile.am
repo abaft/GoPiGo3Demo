@@ -8,6 +8,6 @@ libtof_a_SOURCES = libs/tof.c
 libtof_a_CXXFLAGS = --pedantic -Wall -std=c11 -O3
 
 bin_PROGRAMS = GoPiGo3Demo
-GoPiGo3Demo_SOURCES = main.cpp
+GoPiGo3Demo_SOURCES = main.cpp distance.cpp bluetooth.cpp udp.cpp udp.h bluetooth.h distance.h
 GoPiGo3Demo_LDADD = libGoPiGo3.a libtof.a
 GoPiGo3Demo_LDFLAGS = -lbluetooth -lpthread
