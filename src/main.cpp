@@ -30,7 +30,9 @@ void* dist_loop(void* vstate)
 {
   gpg_state* state = (gpg_state*) vstate;
   while(1)
+  {
     state->distance = dist_poll();
+  }
 }
 
 void* bluetooth_loop(void* vstate)
@@ -83,19 +85,18 @@ int main(int argc, char const *argv[])
 
   if (dist_init())
   {
-    printf("Failed to connect to i2c tof");
-    //return -1;
+    printf("Failed to connect to i2c tof\n");
+    return -1;
   }
 
   state.udp = UDP_connection(argv[1]);
-
-  long long unsigned int packetsSent = 0;
+  state.bluetooth = connect_BT_client();
 
   pthread_t threads[4];
   pthread_create(threads + 0, NULL, dist_loop, &state);
   pthread_create(threads + 1, NULL, network_loop, &state);
   pthread_create(threads + 2, NULL, motor_loop, &state);
-  //pthread_create(threads + 3, NULL, bluetooth_loop, &state);
+  pthread_create(threads + 3, NULL, bluetooth_loop, &state);
 
   printf("Started all modules");
 
