@@ -92,7 +92,7 @@ int main(int argc, char const *argv[])
   }
 
   state.udp = UDP_connection(argv[1]);
-  state.bluetooth = connect_BT_server();
+  state.bluetooth = connect_BT_client();
 
   pthread_t threads[4];
   pthread_create(threads + 0, NULL, dist_loop, &state);
