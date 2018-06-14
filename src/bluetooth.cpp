@@ -20,18 +20,20 @@ bluetooth_conn connect_BT_client()
   addr.rc_channel = (uint8_t) 1;
   str2ba( CAR0ADDR, &addr.rc_bdaddr);
 
-  printf("Connecting to Bluetooth as Client\n");
-
   while(connect(s, (struct sockaddr *) &addr, sizeof(addr)))
+  {
     printf("Failed to connect to Bluetooth server\n");
+    close(s);
+    s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+  }
   printf("Connected Bluetooth as Client\n");
 
+  printf("Connecting to Bluetooth as Client\n");
   struct timeval timeout; //set timeout for 1 seconds
   timeout.tv_sec = 1;
   timeout.tv_usec = 0;
 
   setsockopt(s,SOL_SOCKET,SO_RCVTIMEO,(char*)&timeout,sizeof(struct timeval));
-
   return {s, 1};
 }
 
