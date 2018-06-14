@@ -14,6 +14,11 @@ AC_CONFIG_FILES([Makefile src/Makefile])
 AC_PROG_CXX
 AC_PROG_CC
 
+# Install config for 
+
+sysconfdir=/etc
+
+
 # Checks for libraries.
 
 # Checks for header files.

@@ -17,7 +17,6 @@ extern "C" {
 GoPiGo3 gpg;
 using namespace std;
 
-
 typedef struct
 {
   atomic<int> distance, right_M, left_M, ext_distance;
@@ -82,6 +81,27 @@ void* network_loop(void* vstate)
   }
 }
 
+char* read_config()
+{
+  char * buffer = 0;
+  long length;
+  FILE * f = fopen (SYSCONFDIR, "rb");
+
+  if (f)
+  {
+    fseek (f, 0, SEEK_END);
+    length = ftell (f);
+    fseek (f, 0, SEEK_SET);
+    buffer = (char*) malloc (length);
+    if (buffer)
+    {
+      fread (buffer, 1, length, f);
+    }
+    fclose (f);
+  }
+  return buffer;
+}
+
 
 int main(int argc, char const *argv[])
 {
@@ -93,7 +113,7 @@ int main(int argc, char const *argv[])
     return -1;
   }
 
-  state.udp = UDP_connection(argv[1]);
+  state.udp = UDP_connection(read_config());
   state.bluetooth = connect_BT_client();
 
   pthread_t threads[4];
