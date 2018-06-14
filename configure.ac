@@ -18,7 +18,6 @@ AC_PROG_CC
 
 sysconfdir=/etc
 
-
 # Checks for libraries.
 
 # Checks for header files.

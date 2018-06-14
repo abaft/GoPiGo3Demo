@@ -12,6 +12,9 @@ extern "C" {
 #include "distance.h"
 #include "bluetooth.h"
 #include "udp.h"
+#ifndef BTCONNECT
+#define BTCONNECT connect_BT_client
+#endif
 
 
 GoPiGo3 gpg;
@@ -39,7 +42,12 @@ void* bluetooth_loop(void* vstate)
   while(1)
   {
     int ext_distance;
-    bluetooth_poll(state->bluetooth, state->distance, &ext_distance);
+    if (bluetooth_poll(state->bluetooth, state->distance, &ext_distance))
+    {
+      state->bluetooth = BTCONNECT();
+      continue;
+    }
+
     state->ext_distance = ext_distance;
   }
 }
@@ -112,7 +120,7 @@ int main(int argc, char const *argv[])
   }
 
   state.udp = UDP_connection(read_config());
-  state.bluetooth = connect_BT_client();
+  state.bluetooth = BTCONNECT();
 
   pthread_t threads[4];
   pthread_create(threads + 0, NULL, dist_loop, &state);

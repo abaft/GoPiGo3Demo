@@ -67,11 +67,11 @@ bluetooth_conn connect_BT_server()
 
 int bluetooth_poll(bluetooth_conn conn, int distance, int* ext_distance)
 {
+  int err;
   if (conn.order)
-    write(conn.socket, &distance, sizeof(int));
+    err = write(conn.socket, &distance, sizeof(int));
   recv(conn.socket, ext_distance, sizeof(int), 0);
-  printf("%i\n", *ext_distance);
   if (!conn.order)
-    write(conn.socket, &distance, sizeof(int));
-  return 0;
+    err = write(conn.socket, &distance, sizeof(int));
+  return err == 0;
 }
