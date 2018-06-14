@@ -26,7 +26,6 @@ bluetooth_conn connect_BT_client()
     close(s);
     s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
   }
-  printf("Connected Bluetooth as Client\n");
 
   printf("Connecting to Bluetooth as Client\n");
   struct timeval timeout; //set timeout for 1 seconds
@@ -55,7 +54,14 @@ bluetooth_conn connect_BT_server()
   fprintf(stdout, "local %s\n", buf);
 
   socklen_t opt = sizeof(rem_addr);
-  accept(s, (struct sockaddr *)&rem_addr, &opt);
+  s = accept(s, (struct sockaddr *)&rem_addr, &opt);
+
+  struct timeval timeout; //set timeout for 1 seconds
+  timeout.tv_sec = 1;
+  timeout.tv_usec = 0;
+
+  setsockopt(s,SOL_SOCKET,SO_RCVTIMEO,(char*)&timeout,sizeof(struct timeval));
+ 
   return {s, 0};
 }
 
@@ -64,6 +70,7 @@ int bluetooth_poll(bluetooth_conn conn, int distance, int* ext_distance)
   if (conn.order)
     write(conn.socket, &distance, sizeof(int));
   recv(conn.socket, ext_distance, sizeof(int), 0);
+  printf("%i\n", *ext_distance);
   if (!conn.order)
     write(conn.socket, &distance, sizeof(int));
   return 0;
