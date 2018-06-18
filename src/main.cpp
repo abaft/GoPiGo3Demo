@@ -5,6 +5,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <atomic>
+#include <chrono>
 extern "C" {
 #include "libs/tof.h" // time of flight sensor library
 }
@@ -38,15 +39,20 @@ void* dist_loop(void* vstate)
 
 void* bluetooth_loop(void* vstate)
 {
+
   gpg_state* state = (gpg_state*) vstate;
   while(1)
   {
     int ext_distance;
+    chrono::high_resolution_clock::time_point start = chrono::high_resolution_clock::now();
     if (bluetooth_poll(state->bluetooth, state->distance, &ext_distance))
     {
       state->bluetooth = BTCONNECT();
       continue;
     }
+    chrono::high_resolution_clock::time_point stop = chrono::high_resolution_clock::now();
+    auto time_span = chrono::duration_cast<chrono::duration<double>>(stop - start); 
+    printf("%lf\n", time_span);
 
     state->ext_distance = ext_distance;
   }
