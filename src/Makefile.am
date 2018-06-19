@@ -1,4 +1,4 @@
-AM_CXXFLAGS = --pedantic -Wall -std=c++14 -O3 -DSYSCONFDIR='"$(sysconfdir)/GPG_IP.conf"'
+AM_CXXFLAGS = --pedantic -Wall -std=c++14 -O3 -DSYSCONFDIR='"$(sysconfdir)/GPG_IP.conf"' -DCARNAME='"C0"'
 AM_LDFLAGS =
 
 noinst_LIBRARIES = libGoPiGo3.a libtof.a

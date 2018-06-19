@@ -8,6 +8,6 @@ typedef struct {
 }UDP_conn;
 
 UDP_conn UDP_connection(const char* ipaddress);
-int poll_server(UDP_conn con, int* left_pow, int* right_pow, int dist);
+int poll_server(UDP_conn con, int* left_pow, int* right_pow, int dist, double bt_ping, double udp_ping);
 
 #endif

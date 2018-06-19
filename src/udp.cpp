@@ -34,11 +34,11 @@ UDP_conn UDP_connection(const char* ipaddress)
   return {sockfd, clientAddr};
 }
 
-int poll_server(UDP_conn con, int* left_pow, int* right_pow, int dist)
+int poll_server(UDP_conn con, int* left_pow, int* right_pow, int dist, double bt_ping, double udp_ping)
 {
   char buffer[32];
   memset(buffer, '\0', 32);
-  snprintf(buffer, 32, "%i", dist);
+  snprintf(buffer, 32, CARNAME ",%i,%.5lf,%.5lf", dist, bt_ping, udp_ping);
   sendto(con.sock, buffer, 32, 0, (struct sockaddr *) &con.addr, sizeof(con.addr));
 
   struct timeval timeout; //set timeout for 2 seconds

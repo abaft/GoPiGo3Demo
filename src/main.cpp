@@ -15,6 +15,7 @@ extern "C" {
 #include "udp.h"
 #ifndef BTCONNECT
 #define BTCONNECT connect_BT_client
+#define BTCLIENT
 #endif
 
 
@@ -24,6 +25,7 @@ using namespace std;
 typedef struct
 {
   atomic<int> distance, right_M, left_M, ext_distance;
+  atomic<double> bt_ping, udp_ping;
   UDP_conn udp;
   bluetooth_conn bluetooth;
 }gpg_state;
@@ -51,10 +53,15 @@ void* bluetooth_loop(void* vstate)
       continue;
     }
     chrono::high_resolution_clock::time_point stop = chrono::high_resolution_clock::now();
-    auto time_span = chrono::duration_cast<chrono::duration<double>>(stop - start); 
-    printf("%lf\n", time_span);
+    auto bt_ping = chrono::duration_cast<chrono::duration<double>>(stop - start); 
+
+    state->bt_ping = bt_ping.count();
 
     state->ext_distance = ext_distance;
+#ifdef BTCLIENT
+    timespec sleep = {0, 100000000};
+    nanosleep(&sleep, NULL);
+#endif
   }
 }
 
@@ -85,7 +92,13 @@ void* network_loop(void* vstate)
   while(1)
   {
     int left_M, right_M;
-    poll_server(state->udp, &left_M, &right_M, state->distance);
+    chrono::high_resolution_clock::time_point start = chrono::high_resolution_clock::now();
+    poll_server(state->udp, &left_M, &right_M, state->distance, state->bt_ping, state->udp_ping);
+    chrono::high_resolution_clock::time_point stop = chrono::high_resolution_clock::now();
+    auto udp_ping = chrono::duration_cast<chrono::duration<double>>(stop - start);
+
+    state->udp_ping = udp_ping.count();
+
     state->left_M = left_M;
     state->right_M = right_M;
     timespec sleep = {0, 100000000};
