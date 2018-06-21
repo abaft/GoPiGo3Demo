@@ -32,7 +32,7 @@ bluetooth_conn connect_BT_client()
   timeout.tv_sec = 1;
   timeout.tv_usec = 0;
 
-  setsockopt(s,SOL_SOCKET,SO_RCVTIMEO,(char*)&timeout,sizeof(struct timeval));
+  //setsockopt(s,SOL_SOCKET,SO_RCVTIMEO,(char*)&timeout,sizeof(struct timeval));
   return {s, 1};
 }
 
@@ -60,18 +60,17 @@ bluetooth_conn connect_BT_server()
   timeout.tv_sec = 1;
   timeout.tv_usec = 0;
 
-  setsockopt(s,SOL_SOCKET,SO_RCVTIMEO,(char*)&timeout,sizeof(struct timeval));
+  //setsockopt(s,SOL_SOCKET,SO_RCVTIMEO,(char*)&timeout,sizeof(struct timeval));
  
   return {s, 0};
 }
 
-int bluetooth_poll(bluetooth_conn conn, int distance, int* ext_distance)
+int bluetooth_read(bluetooth_conn conn, int* ext_distance)
 {
-  int err;
-  if (conn.order)
-    err = write(conn.socket, &distance, sizeof(int));
   recv(conn.socket, ext_distance, sizeof(int), 0);
-  if (!conn.order)
-    err = write(conn.socket, &distance, sizeof(int));
-  return err == 0;
+}
+
+int bluetooth_write(bluetooth_conn conn, int distance)
+{
+    return write(conn.socket, &distance, sizeof(int));
 }

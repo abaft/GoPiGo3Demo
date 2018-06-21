@@ -39,29 +39,28 @@ void* dist_loop(void* vstate)
   }
 }
 
-void* bluetooth_loop(void* vstate)
+void* bluetooth_loop_r(void* vstate)
 {
 
   gpg_state* state = (gpg_state*) vstate;
   while(1)
   {
     int ext_distance;
-    chrono::high_resolution_clock::time_point start = chrono::high_resolution_clock::now();
-    if (bluetooth_poll(state->bluetooth, state->distance, &ext_distance))
-    {
-      state->bluetooth = BTCONNECT();
-      continue;
-    }
-    chrono::high_resolution_clock::time_point stop = chrono::high_resolution_clock::now();
-    auto bt_ping = chrono::duration_cast<chrono::duration<double>>(stop - start); 
-
-    state->bt_ping = bt_ping.count();
+    bluetooth_read(state->bluetooth, &ext_distance);
 
     state->ext_distance = ext_distance;
-#ifdef BTCLIENT
-    timespec sleep = {0, 100000000};
+  }
+}
+
+void* bluetooth_loop_w(void* vstate)
+{
+
+  gpg_state* state = (gpg_state*) vstate;
+  while(1)
+  {
+    bluetooth_write(state->bluetooth, state->distance);
+    timespec sleep = {0, 10000000};
     nanosleep(&sleep, NULL);
-#endif
   }
 }
 
@@ -141,11 +140,12 @@ int main(int argc, char const *argv[])
   state.udp = UDP_connection(read_config());
   state.bluetooth = BTCONNECT();
 
-  pthread_t threads[4];
+  pthread_t threads[5];
   pthread_create(threads + 0, NULL, dist_loop, &state);
   pthread_create(threads + 1, NULL, network_loop, &state);
   pthread_create(threads + 2, NULL, motor_loop, &state);
-  pthread_create(threads + 3, NULL, bluetooth_loop, &state);
+  pthread_create(threads + 3, NULL, bluetooth_loop_r, &state);
+  pthread_create(threads + 4, NULL, bluetooth_loop_w, &state);
 
   printf("Started all modules");
 
