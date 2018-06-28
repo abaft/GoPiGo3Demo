@@ -1,4 +1,5 @@
-AM_CXXFLAGS = --pedantic -Wall -std=c++14 -O3 -DSYSCONFDIR='"$(sysconfdir)/GPG_IP.conf"' -DCARNAME='"C0"'
+AM_CXXFLAGS = --pedantic -Wall -std=c++14 -O3 -DSYSCONFDIR='"$(sysconfdir)/GPG_IP.conf"' -DCARNAME='"C0"' -DCAR0ADDR='"B8:27:EB:6A:C6:A8"' -DBTCONNECT='connect_BT_server'
+
 AM_LDFLAGS =
 
 noinst_LIBRARIES = libGoPiGo3.a libtof.a

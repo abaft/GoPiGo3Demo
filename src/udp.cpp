@@ -38,10 +38,10 @@ int poll_server(UDP_conn con, int* left_pow, int* right_pow, int dist, double bt
 {
   char buffer[32];
   memset(buffer, '\0', 32);
-  snprintf(buffer, 32, CARNAME ",%i,%.5lf,%.5lf", dist, bt_ping, udp_ping);
+  snprintf(buffer, 32, CARNAME ",%i,%.5lf", dist, udp_ping);
   sendto(con.sock, buffer, 32, 0, (struct sockaddr *) &con.addr, sizeof(con.addr));
 
-  struct timeval timeout; //set timeout for 2 seconds
+  struct timeval timeout; //set timeout for 1 seconds
   timeout.tv_sec = 1;
   timeout.tv_usec = 0;
 
@@ -54,7 +54,7 @@ int poll_server(UDP_conn con, int* left_pow, int* right_pow, int dist, double bt
     //printf("%s\n",message );
     *left_pow = atoi(strtok(message, ","));
     *right_pow = atoi(strtok(NULL, ","));
-    *overr = atoi(strtok(NULL, ","));
+    *overr = atoi(strtok(NULL, ",")) == 1;
   }
   else
   {

@@ -7,7 +7,6 @@
 #include <bluetooth/rfcomm.h>
 #include "bluetooth.h"
 
-#define CAR0ADDR "B8:27:EB:6A:C6:A8"
 using namespace std;
 
 bluetooth_conn connect_BT_client()

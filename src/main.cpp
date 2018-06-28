@@ -13,9 +13,9 @@ extern "C" {
 #include "distance.h"
 #include "bluetooth.h"
 #include "udp.h"
+
 #ifndef BTCONNECT
-#define BTCONNECT connect_BT_client
-#define BTCLIENT
+#define BTCONNECT connect_BT_server
 #endif
 
 
