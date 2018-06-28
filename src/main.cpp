@@ -25,6 +25,7 @@ using namespace std;
 typedef struct
 {
   atomic<int> distance, right_M, left_M, ext_distance;
+  atomic<bool> overr;
   atomic<double> bt_ping, udp_ping;
   UDP_conn udp;
   bluetooth_conn bluetooth;
@@ -70,7 +71,8 @@ void* motor_loop(void* vstate)
   gpg_state* state = (gpg_state*) vstate;
   while(1)
   {
-    if (state->distance < 100 && state->distance != -1 || state->ext_distance < 100 && state->ext_distance != -1)
+    if ((state->distance < 100 && state->distance != -1 || state->ext_distance < 100 && state->ext_distance != -1) &&
+        !state->overr)
     {
       gpg.set_motor_power(MOTOR_LEFT, 0);
       gpg.set_motor_power(MOTOR_RIGHT, 0);
@@ -91,8 +93,11 @@ void* network_loop(void* vstate)
   while(1)
   {
     int left_M, right_M;
+    bool overr
     chrono::high_resolution_clock::time_point start = chrono::high_resolution_clock::now();
-    poll_server(state->udp, &left_M, &right_M, state->distance, state->bt_ping, state->udp_ping);
+
+    poll_server(state->udp, &left_M, &right_M, state->distance, state->bt_ping, state->udp_ping, &overr);
+
     chrono::high_resolution_clock::time_point stop = chrono::high_resolution_clock::now();
     auto udp_ping = chrono::duration_cast<chrono::duration<double>>(stop - start);
 
@@ -100,6 +105,7 @@ void* network_loop(void* vstate)
 
     state->left_M = left_M;
     state->right_M = right_M;
+    state->overr = overr;
     timespec sleep = {0, 100000000};
     nanosleep(&sleep, NULL);
   }

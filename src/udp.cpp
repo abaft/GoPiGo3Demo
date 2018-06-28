@@ -34,7 +34,7 @@ UDP_conn UDP_connection(const char* ipaddress)
   return {sockfd, clientAddr};
 }
 
-int poll_server(UDP_conn con, int* left_pow, int* right_pow, int dist, double bt_ping, double udp_ping)
+int poll_server(UDP_conn con, int* left_pow, int* right_pow, int dist, double bt_ping, double udp_ping, bool* overr)
 {
   char buffer[32];
   memset(buffer, '\0', 32);
@@ -54,6 +54,7 @@ int poll_server(UDP_conn con, int* left_pow, int* right_pow, int dist, double bt
     //printf("%s\n",message );
     *left_pow = atoi(strtok(message, ","));
     *right_pow = atoi(strtok(NULL, ","));
+    *overr = atoi(strtok(NULL, ","));
   }
   else
   {
