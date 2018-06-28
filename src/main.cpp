@@ -57,10 +57,21 @@ void* bluetooth_loop_w(void* vstate)
 {
 
   gpg_state* state = (gpg_state*) vstate;
+
+  char stop = 0;
   while(1)
   {
-    bluetooth_write(state->bluetooth, state->distance);
-    timespec sleep = {0, 10000000};
+    if (state->distance < 100)
+    {
+      bluetooth_write(state->bluetooth, state->distance);
+      stop = 1;
+    }
+    else if (stop && state->distance >= 100)
+    {
+      bluetooth_write(state->bluetooth, state->distance);
+      stop--;
+    }
+    timespec sleep = {0, 70000000};
     nanosleep(&sleep, NULL);
   }
 }

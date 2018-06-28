@@ -29,10 +29,10 @@ bluetooth_conn connect_BT_client()
 
   printf("Connecting to Bluetooth as Client\n");
   struct timeval timeout; //set timeout for 1 seconds
-  timeout.tv_sec = 1;
+  timeout.tv_sec = 30;
   timeout.tv_usec = 0;
 
-  //setsockopt(s,SOL_SOCKET,SO_RCVTIMEO,(char*)&timeout,sizeof(struct timeval));
+  setsockopt(s,SOL_SOCKET,SO_RCVTIMEO,(char*)&timeout,sizeof(struct timeval));
   return {s, 1};
 }
 
@@ -57,10 +57,10 @@ bluetooth_conn connect_BT_server()
   s = accept(s, (struct sockaddr *)&rem_addr, &opt);
 
   struct timeval timeout; //set timeout for 1 seconds
-  timeout.tv_sec = 1;
-  timeout.tv_usec = 0;
+  timeout.tv_sec = 0;
+  timeout.tv_usec = 200000000;
 
-  //setsockopt(s,SOL_SOCKET,SO_RCVTIMEO,(char*)&timeout,sizeof(struct timeval));
+  setsockopt(s,SOL_SOCKET,SO_RCVTIMEO,(char*)&timeout,sizeof(struct timeval));
  
   return {s, 0};
 }
@@ -72,5 +72,6 @@ int bluetooth_read(bluetooth_conn conn, int* ext_distance)
 
 int bluetooth_write(bluetooth_conn conn, int distance)
 {
-    return write(conn.socket, &distance, sizeof(int));
+    int err = write(conn.socket, &distance, sizeof(int));
+    return err;
 }
