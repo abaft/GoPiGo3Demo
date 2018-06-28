@@ -104,7 +104,7 @@ void* network_loop(void* vstate)
   while(1)
   {
     int left_M, right_M;
-    bool overr
+    bool overr;
     chrono::high_resolution_clock::time_point start = chrono::high_resolution_clock::now();
 
     poll_server(state->udp, &left_M, &right_M, state->distance, state->bt_ping, state->udp_ping, &overr);
